@@ -11,39 +11,38 @@
 ;	I/O CONFIGURATION	
 ; ************************************************************************
 Pentry	movlw 0xFE
-	movwf TRISC		; RC0 - ˜˜˜˜˜, ˜˜˜˜˜˜˜˜˜ - ˜˜˜˜˜ (TRISC=0FE)
+	movwf TRISC		; RC0 - ?????, ????????? - ?????
 ; ************************************************************************
 ;	GENERAL INITIALISATION
 ; ************************************************************************
-	bcf INTCON2,NOT_RBPU	; ˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜ ˜˜ ˜˜˜˜ ˜ (INTCON2=INTCON2[NOT_RBPU] = 0)
+	bcf INTCON2,NOT_RBPU	; ???????? ????????????? ????????? ?? ???? ?
 	movlw Period
-	movwf Count		; ˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜ (Count = Period)
-	clrf paus		; (paus = b00000000)
+	movwf Count		; ????????? ???????
+	clrf paus
 	movlw 0xFF
-	movwf PR2		; (PR2 = 255)
-	bsf PIE1,TMR2IE		; ˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜ ˜˜ ˜˜˜˜˜˜˜ 2 (PIE1[TMR2IE] = 1)
+	movwf PR2
+	bsf PIE1,TMR2IE		; ????????? ?????????? ?? ??????? 2
 	movlw 0xC0
-	movwf INTCON		; ˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜ ˜ ˜˜˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜ (INTCON = 0xC0 ˜˜˜ ˜˜ INTCON=192)
+	movwf INTCON		; ????????? ?????????? ????????? ? ???????????? ??????????
 ; ************************************************************************
 ; 	Start waiting loop
 ; ************************************************************************
-Wentry	btfsc BUTTON		; ˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜
+Wentry	btfsc BUTTON		; ??????? ???????
 	bra $-2
 	rcall Pause
 	btfsc BUTTON
 	bra Wentry
-	btfss BUTTON		; ˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜
+	btfss BUTTON		; ??????? ??????????
 	bra $-2
 	rcall Pause
 	btfss BUTTON
 	bra $-10
 ;
-	bsf FIRE		; ˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜
-	bsf T2CON,TMR2ON	; ˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜
-	movlw 0xFA
-	movwf Count
-	clrf paus
-	rcall Pause_10ms
+	bsf FIRE		; ?????? ????????
+	bsf T2CON,TMR2ON	; ????????? ???????
+	movlw 0x7F
+	movwf T2CON
+
 	bra Wentry
 ; ************************************************************************
 Pause	nop
@@ -51,14 +50,8 @@ Pause	nop
 	bra Pause
 	decfsz Count
 	bra Pause
+	movlw 0x3
+	movlw Countb
 	return
 ; ************************************************************************
-
-Pause_10ms nop
-	decfsz paus
-	bra Pause
-	decfsz Count
-	bra Pause
-	return
-	
-END
+	END
